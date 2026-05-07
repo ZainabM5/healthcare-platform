@@ -106,7 +106,7 @@ npm start
 
 ## 🏥 User Dashboard
 
-<img src="screenshots/dashboard.png" width="550"/>
+<img src="screenshots/dashboard.png" width="650"/>
 
 ---
 
