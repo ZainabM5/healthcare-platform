@@ -82,30 +82,12 @@ python manage.py runserver
 
 # 📸 Application Screenshots
 
-## 🔐 Login Page
-
 ![Login Page](screenshots/login.png)
-
----
-
-## 📝 Signup Page
 
 ![Signup Page](screenshots/signup.png)
 
----
-
-## 🏥 User Dashboard
-
 ![Dashboard](screenshots/dashboard.png)
 
----
-
-## 🤖 Wait Time Prediction
-
 ![Prediction](screenshots/prediction.png)
-
----
-
-## 🛠 Admin Dashboard
 
 ![Admin Dashboard](screenshots/admin-dashboard.png)
