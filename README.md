@@ -94,29 +94,28 @@ npm start
 
 ## 🔐 Login Page
 
-![Login Page](screenshots/login.png)
+<img src="screenshots/login.png" width="700"/>
 
 ---
 
 ## 📝 Signup Page
 
-![Signup Page](screenshots/signup.png)
+<img src="screenshots/signup.png" width="700"/>
 
 ---
 
 ## 🏥 User Dashboard
 
-![Dashboard](screenshots/dashboard.png)
+<img src="screenshots/dashboard.png" width="700"/>
 
 ---
 
 ## 🤖 Wait Time Prediction
 
-![Prediction](screenshots/prediction.png)
+<img src="screenshots/prediction.png" width="700"/>
 
 ---
 
 ## 🛠 Admin Dashboard
 
-![Admin Dashboard](screenshots/admin-dashboard.png)
-
+<img src="screenshots/admin-dashboard.png" width="700"/>
