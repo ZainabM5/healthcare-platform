@@ -1,0 +1,102 @@
+/* 🌐 Container */
+.container {
+  min-height: 100vh;
+  padding: 30px 20px;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  text-align: center;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* 🏥 Hospital grid */
+.hospital-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 25px;
+}
+
+/* 🏥 Cards */
+.card {
+  background: white;
+  color: black;
+  padding: 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+
+/* ✅ Selected card */
+.card.selected {
+  border: 2px solid #667eea;
+  background: #f0f4ff;
+}
+
+/* 📊 Box */
+.box {
+  background: white;
+  color: black;
+  padding: 25px;
+  margin-top: 30px;
+  border-radius: 15px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* 🔓 Logout button override */
+button:last-of-type {
+  background: red;
+}
+
+/* ⏳ Loading text */
+p {
+  margin-top: 10px;
+}
+
+/* 📱 Mobile adjustments */
+@media (max-width: 600px) {
+  .box {
+    width: 100%;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+}
