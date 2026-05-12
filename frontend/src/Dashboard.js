@@ -47,7 +47,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        const response = await authFetch("http://127.0.0.1:8000/hospitals/");
+        const response = await authFetch("http://13.61.152.142:8000/hospitals/");
         if (!response) return;
 
         if (!response.ok) {

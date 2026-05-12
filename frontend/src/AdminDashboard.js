@@ -50,7 +50,7 @@ function AdminDashboard() {
 
   // 🏥 Fetch hospitals
   const fetchHospitals = useCallback(async () => {
-    const response = await authFetch("http://127.0.0.1:8000/hospitals/");
+    const response = await authFetch("http://13.61.152.142:8000/hospitals/");
     if (!response) return;
 
     const data = await response.json();
