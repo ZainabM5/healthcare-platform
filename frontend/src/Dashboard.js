@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
 
-// 🔐 Centralized secure fetch (OUTSIDE component)
+// 🔐 Centralized secure fetch
 const authFetch = async (url, options = {}) => {
   const token = localStorage.getItem("token");
 
@@ -34,7 +34,9 @@ function Dashboard() {
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [patients, setPatients] = useState("");
   const [result, setResult] = useState(null);
+
   const [loading, setLoading] = useState(false);
+  const [loadingHospitals, setLoadingHospitals] = useState(true);
 
   // 🔐 Protect page
   useEffect(() => {
@@ -47,19 +49,30 @@ function Dashboard() {
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        const response = await authFetch("http://13.61.152.142:8000/hospitals/");
-        if (!response) return;
+        const response = await authFetch(
+          "http://13.61.152.142:8000/hospitals/"
+        );
+
+        if (!response) {
+          setLoadingHospitals(false);
+          return;
+        }
 
         if (!response.ok) {
           alert("Failed to load hospitals");
+          setLoadingHospitals(false);
           return;
         }
 
         const data = await response.json();
+
         setHospitals(data);
+        setLoadingHospitals(false);
+
       } catch (error) {
         console.error(error);
         alert("Error loading hospitals");
+        setLoadingHospitals(false);
       }
     };
 
@@ -97,10 +110,13 @@ function Dashboard() {
       setResult(null);
 
       const response = await authFetch(
-        `http://127.0.0.1:8000/predict/?patients=${newPatients}&current_patients=${selectedHospital.current_patients}&current_wait=${selectedHospital.current_wait}`
+        `http://13.61.152.142:8000/predict/?patients=${newPatients}&current_patients=${selectedHospital.current_patients}&current_wait=${selectedHospital.current_wait}`
       );
 
-      if (!response) return;
+      if (!response) {
+        setLoading(false);
+        return;
+      }
 
       if (!response.ok) {
         alert("Prediction failed");
@@ -109,6 +125,7 @@ function Dashboard() {
       }
 
       const data = await response.json();
+
       setLoading(false);
 
       if (data.error) {
@@ -130,27 +147,31 @@ function Dashboard() {
       <h1>🏥 Healthcare Dashboard</h1>
 
       {/* 🏥 Hospitals */}
-      {!hospitals.length && <p>Loading hospitals...</p>}
-
-      <div className="hospital-list">
-        {hospitals.map((hospital) => (
-          <div
-            key={hospital.id}
-            className={`card ${
-              selectedHospital === hospital ? "selected" : ""
-            }`}
-            onClick={() => {
-              setSelectedHospital(hospital);
-              setPatients("");
-              setResult(null);
-            }}
-          >
-            <h3>{hospital.name}</h3>
-            <p>👥 Patients: {hospital.current_patients}</p>
-            <p>⏱ Wait: {hospital.current_wait} mins</p>
-          </div>
-        ))}
-      </div>
+      {loadingHospitals ? (
+        <p>Loading hospitals...</p>
+      ) : hospitals.length === 0 ? (
+        <p>No hospitals available</p>
+      ) : (
+        <div className="hospital-list">
+          {hospitals.map((hospital) => (
+            <div
+              key={hospital.id}
+              className={`card ${
+                selectedHospital === hospital ? "selected" : ""
+              }`}
+              onClick={() => {
+                setSelectedHospital(hospital);
+                setPatients("");
+                setResult(null);
+              }}
+            >
+              <h3>{hospital.name}</h3>
+              <p>👥 Patients: {hospital.current_patients}</p>
+              <p>⏱ Wait: {hospital.current_wait} mins</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* 📊 Selected */}
       {selectedHospital && (
@@ -201,6 +222,7 @@ function Dashboard() {
 
               {(() => {
                 const level = getWaitLevel(result.estimated_wait);
+
                 return (
                   <h3 style={{ color: level.color }}>
                     ● {level.label} Wait
@@ -211,9 +233,11 @@ function Dashboard() {
               <p style={{ marginTop: "10px", color: "#555" }}>
                 {result.estimated_wait < 40 &&
                   "Quick service expected."}
+
                 {result.estimated_wait >= 40 &&
                   result.estimated_wait < 80 &&
                   "Moderate waiting time due to patient load."}
+
                 {result.estimated_wait >= 80 &&
                   "High demand — longer waiting time expected."}
               </p>
