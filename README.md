@@ -78,33 +78,44 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python manage.py runserver
+```
+
+## Frontend
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+---
 
 # 📸 Application Screenshots
 
 ## 🔐 Login Page
 
-![Login Page](screenshots/login.png)
+<img src="screenshots/login.png" width="450"/>
 
 ---
 
 ## 📝 Signup Page
 
-![Signup Page](screenshots/signup.png)
+<img src="screenshots/signup.png" width="450"/>
 
 ---
 
 ## 🏥 User Dashboard
 
-![Dashboard](screenshots/dashboard.png)
+<img src="screenshots/dashboard.png" width="750"/>
 
 ---
 
 ## 🤖 Wait Time Prediction
 
-![Prediction](screenshots/prediction.png)
+<img src="screenshots/prediction.png" width="450"/>
 
 ---
 
 ## 🛠 Admin Dashboard
 
-![Admin Dashboard](screenshots/admin-dashboard.png)
+<img src="screenshots/admin-dashboard.png" width="450"/>
