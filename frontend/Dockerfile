@@ -1,13 +1,14 @@
-FROM node:18
+FROM node:18 as build
 
 WORKDIR /app
 
 COPY . .
 
 RUN npm install
+RUN npm run build
 
-ENV NODE_OPTIONS=--max-old-space-size=512
+RUN npm install -g serve
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["serve", "-s", "build", "-l", "3000"]
