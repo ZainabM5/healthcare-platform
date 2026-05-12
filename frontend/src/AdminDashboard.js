@@ -72,7 +72,7 @@ function AdminDashboard() {
       setLoading(true);
 
       const response = await authFetch(
-        "http://127.0.0.1:8000/add-hospital/",
+        "http://13.61.152.142:8000/add-hospital/",
         {
           method: "POST",
           headers: {
@@ -114,7 +114,7 @@ function AdminDashboard() {
     if (!window.confirm("Delete this hospital?")) return;
 
     const response = await authFetch(
-      `http://127.0.0.1:8000/delete-hospital/${id}/`,
+      `http://13.61.152.142:8000/delete-hospital/${id}/`,
       { method: "DELETE" }
     );
 
@@ -139,7 +139,7 @@ function AdminDashboard() {
     if (!newName || !newPatients || !newWait) return;
 
     const response = await authFetch(
-      `http://127.0.0.1:8000/update-hospital/${hospital.id}/`,
+      `http://13.61.152.142:8000/update-hospital/${hospital.id}/`,
       {
         method: "PUT",
         headers: {
