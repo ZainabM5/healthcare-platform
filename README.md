@@ -1,10 +1,7 @@
 # 🏥 Healthcare Waiting Time Prediction Platform
-
 A full-stack healthcare web application that predicts hospital waiting times using Machine Learning.
-
-Built using React, Django REST Framework, and Scikit-learn. 
-CI/CD pipeline working.
----
+Built using React, Django REST Framework, and Scikit-learn.
+CI/CD pipeline implemented using GitHub Actions and AWS EC2.
 
 # 🚀 Features
 
