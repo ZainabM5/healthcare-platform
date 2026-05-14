@@ -2,8 +2,8 @@
 
 A full-stack healthcare web application that predicts hospital waiting times using Machine Learning.
 
-Built using React, Django REST Framework, and Scikit-learn.
-
+Built using React, Django REST Framework, and Scikit-learn. 
+CI/CD pipeline working.
 ---
 
 # 🚀 Features
