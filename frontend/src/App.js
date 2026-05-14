@@ -3,7 +3,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 import AdminDashboard from "./AdminDashboard";
-
+import ForgotPassword from "./ForgotPassword";
 
 // 🔐 Protect normal user routes
 const ProtectedRoute = ({ children }) => {
@@ -32,7 +32,7 @@ function App() {
         {/* 🔐 Public */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         {/* 👤 User Dashboard */}
         <Route
           path="/dashboard"

@@ -7,13 +7,16 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [hospitals, setHospitals] = useState([]);
 
+  // ✅ API URL
+  const API_URL = process.env.REACT_APP_API_URL;
+
   // 🔐 Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/";
   };
 
-  // 🔐 Centralized secure fetch (FIXED)
+  // 🔐 Secure fetch
   const authFetch = useCallback(async (url, options = {}) => {
     const token = localStorage.getItem("token");
 
@@ -41,7 +44,7 @@ function AdminDashboard() {
     return response;
   }, []);
 
-  // 🔐 Protect page
+  // 🔒 Protect page
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       window.location.href = "/";
@@ -50,18 +53,25 @@ function AdminDashboard() {
 
   // 🏥 Fetch hospitals
   const fetchHospitals = useCallback(async () => {
-    const response = await authFetch("http://13.61.152.142:8000/hospitals/");
-    if (!response) return;
+    try {
+      const response = await authFetch(`${API_URL}/hospitals/`);
 
-    const data = await response.json();
-    setHospitals(data);
-  }, [authFetch]);
+      if (!response) return;
+
+      const data = await response.json();
+      setHospitals(data);
+
+    } catch (error) {
+      console.error(error);
+      alert("Failed to load hospitals");
+    }
+  }, [authFetch, API_URL]);
 
   useEffect(() => {
     fetchHospitals();
   }, [fetchHospitals]);
 
-  // ➕ ADD
+  // ➕ Add hospital
   const handleAdd = async () => {
     if (!name || !patients || !wait) {
       alert("Please fill all fields");
@@ -72,7 +82,7 @@ function AdminDashboard() {
       setLoading(true);
 
       const response = await authFetch(
-        "http://13.61.152.142:8000/add-hospital/",
+        `${API_URL}/add-hospital/`,
         {
           method: "POST",
           headers: {
@@ -89,6 +99,7 @@ function AdminDashboard() {
       if (!response) return;
 
       const data = await response.json();
+
       setLoading(false);
 
       if (data.error) {
@@ -105,128 +116,178 @@ function AdminDashboard() {
 
     } catch (error) {
       setLoading(false);
+      console.error(error);
       alert("Server error");
     }
   };
 
-  // 🗑 DELETE
+  // 🗑 Delete hospital
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this hospital?")) return;
 
-    const response = await authFetch(
-      `http://13.61.152.142:8000/delete-hospital/${id}/`,
-      { method: "DELETE" }
-    );
+    try {
+      const response = await authFetch(
+        `${API_URL}/delete-hospital/${id}/`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    if (!response) return;
+      if (!response) return;
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.error) {
-      alert(data.error);
-    } else {
-      alert("Deleted successfully");
-      setHospitals(hospitals.filter((h) => h.id !== id));
+      if (data.error) {
+        alert(data.error);
+      } else {
+        alert("Deleted successfully");
+
+        setHospitals(
+          hospitals.filter((h) => h.id !== id)
+        );
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Delete failed");
     }
   };
 
-  // ✏️ EDIT
+  // ✏️ Edit hospital
   const handleEdit = async (hospital) => {
-    const newName = prompt("Enter name", hospital.name);
-    const newPatients = prompt("Enter patients", hospital.current_patients);
-    const newWait = prompt("Enter wait", hospital.current_wait);
+    const newName = prompt("Enter hospital name", hospital.name);
+    const newPatients = prompt(
+      "Enter patients",
+      hospital.current_patients
+    );
+    const newWait = prompt(
+      "Enter wait time",
+      hospital.current_wait
+    );
 
     if (!newName || !newPatients || !newWait) return;
 
-    const response = await authFetch(
-      `http://13.61.152.142:8000/update-hospital/${hospital.id}/`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: newName,
-          current_patients: parseInt(newPatients),
-          current_wait: parseInt(newWait),
-        }),
-      }
-    );
-
-    if (!response) return;
-
-    const data = await response.json();
-
-    if (data.error) {
-      alert(data.error);
-    } else {
-      alert("Updated successfully");
-
-      setHospitals(
-        hospitals.map((h) =>
-          h.id === hospital.id
-            ? {
-                ...h,
-                name: newName,
-                current_patients: newPatients,
-                current_wait: newWait,
-              }
-            : h
-        )
+    try {
+      const response = await authFetch(
+        `${API_URL}/update-hospital/${hospital.id}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: newName,
+            current_patients: parseInt(newPatients),
+            current_wait: parseInt(newWait),
+          }),
+        }
       );
+
+      if (!response) return;
+
+      const data = await response.json();
+
+      if (data.error) {
+        alert(data.error);
+      } else {
+        alert("Updated successfully ✅");
+
+        setHospitals(
+          hospitals.map((h) =>
+            h.id === hospital.id
+              ? {
+                  ...h,
+                  name: newName,
+                  current_patients: newPatients,
+                  current_wait: newWait,
+                }
+              : h
+          )
+        );
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Update failed");
     }
   };
 
   const styles = {
     container: {
       padding: "30px",
-      maxWidth: "600px",
+      maxWidth: "700px",
       margin: "auto",
       textAlign: "center",
     },
+
     header: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
+      marginBottom: "20px",
     },
+
     logoutBtn: {
       backgroundColor: "red",
       color: "white",
       border: "none",
-      padding: "8px 12px",
+      padding: "10px 15px",
       cursor: "pointer",
+      borderRadius: "6px",
     },
+
     input: {
       width: "100%",
-      padding: "10px",
+      padding: "12px",
       marginTop: "10px",
+      borderRadius: "6px",
+      border: "1px solid #ccc",
     },
+
     button: {
       width: "100%",
-      padding: "10px",
+      padding: "12px",
       marginTop: "15px",
       backgroundColor: "#667eea",
       color: "white",
       border: "none",
+      borderRadius: "6px",
       cursor: "pointer",
     },
+
     list: {
-      marginTop: "30px",
+      marginTop: "40px",
       textAlign: "left",
     },
+
+    card: {
+      padding: "15px",
+      marginBottom: "15px",
+      border: "1px solid #ddd",
+      borderRadius: "8px",
+      backgroundColor: "#f9f9f9",
+    },
+
     actionBtn: {
-      marginTop: "5px",
-      marginRight: "5px",
-      padding: "5px 10px",
+      marginTop: "10px",
+      marginRight: "10px",
+      padding: "8px 12px",
       cursor: "pointer",
+      border: "none",
+      borderRadius: "5px",
     },
   };
 
   return (
     <div style={styles.container}>
+
       <div style={styles.header}>
         <h1>🛠 Admin Dashboard</h1>
-        <button style={styles.logoutBtn} onClick={handleLogout}>
+
+        <button
+          style={styles.logoutBtn}
+          onClick={handleLogout}
+        >
           Logout
         </button>
       </div>
@@ -254,36 +315,56 @@ function AdminDashboard() {
         onChange={(e) => setWait(e.target.value)}
       />
 
-      <button style={styles.button} onClick={handleAdd}>
+      <button
+        style={styles.button}
+        onClick={handleAdd}
+        disabled={loading}
+      >
         {loading ? "Adding..." : "Add Hospital"}
       </button>
 
       <div style={styles.list}>
-        <h3>Hospitals</h3>
+        <h2>🏥 Hospitals</h2>
 
         {hospitals.map((h) => (
-          <div key={h.id}>
-            <strong>{h.name}</strong> — {h.current_patients} patients — {h.current_wait} mins
-            <br />
+          <div key={h.id} style={styles.card}>
+
+            <h3>{h.name}</h3>
+
+            <p>
+              👥 Patients: {h.current_patients}
+            </p>
+
+            <p>
+              ⏳ Wait Time: {h.current_wait} mins
+            </p>
 
             <button
-              style={styles.actionBtn}
+              style={{
+                ...styles.actionBtn,
+                backgroundColor: "#667eea",
+                color: "white",
+              }}
               onClick={() => handleEdit(h)}
             >
               ✏️ Edit
             </button>
 
             <button
-              style={{ ...styles.actionBtn, backgroundColor: "red", color: "white" }}
+              style={{
+                ...styles.actionBtn,
+                backgroundColor: "red",
+                color: "white",
+              }}
               onClick={() => handleDelete(h.id)}
             >
               🗑 Delete
             </button>
 
-            <hr />
           </div>
         ))}
       </div>
+
     </div>
   );
 }

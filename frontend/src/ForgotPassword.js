@@ -1,138 +1,55 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 // ✅ API URL
 const API_URL = process.env.REACT_APP_API_URL;
 
-function Signup() {
+function ForgotPassword() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 🔐 Validation
-  const validateInput = () => {
-
-    // Username
-    if (username.length < 4) {
-      alert(
-        "Username must be at least 4 characters"
-      );
-      return false;
-    }
-
-    if (username.length > 15) {
-      alert(
-        "Username must be less than 15 characters"
-      );
-      return false;
-    }
-
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      alert(
-        "Username can only contain letters, numbers, and underscore"
-      );
-      return false;
-    }
-
-    // Password
-    if (password.length < 6) {
-      alert(
-        "Password must be at least 6 characters"
-      );
-      return false;
-    }
-
-    if (!/[A-Z]/.test(password)) {
-      alert(
-        "Password must contain at least one uppercase letter"
-      );
-      return false;
-    }
-
-    if (
-      !/[!@#$%^&*(),.?\":{}|<>]/.test(password)
-    ) {
-      alert(
-        "Password must contain at least one special character"
-      );
-      return false;
-    }
-
-    return true;
-  };
-
-  // 📝 Signup
-  const handleSignup = async () => {
+  const handleReset = async () => {
 
     if (!username || !password) {
-      alert(
-        "Please enter username and password"
-      );
+      alert("Please fill all fields");
       return;
     }
-
-    // 🔐 Frontend validation
-    if (!validateInput()) return;
 
     try {
 
       setLoading(true);
 
       const response = await fetch(
-        `${API_URL}/signup/`,
+        `${API_URL}/forgot-password/`,
         {
           method: "POST",
 
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
 
           body: JSON.stringify({
             username,
-            password,
+            new_password: password,
           }),
         }
       );
-
-      if (!response.ok) {
-
-        setLoading(false);
-
-        alert("Signup failed");
-        return;
-      }
 
       const data = await response.json();
 
       setLoading(false);
 
+      // ✅ HANDLE VALIDATION ERRORS
       if (data.error) {
         alert(data.error);
         return;
       }
 
-      if (data.token) {
+      // ✅ SUCCESS
+      alert("Password reset successful ✅");
 
-        // ✅ Save auth
-        localStorage.setItem(
-          "token",
-          data.token
-        );
-
-        localStorage.setItem(
-          "is_admin",
-          false
-        );
-
-        alert(
-          "Account created successfully 🎉"
-        );
-
-        window.location.href =
-          "/dashboard";
-      }
+      window.location.href = "/";
 
     } catch (error) {
 
@@ -147,8 +64,11 @@ function Signup() {
   const styles = {
     container: {
       height: "100vh",
+
       display: "flex",
+
       justifyContent: "center",
+
       alignItems: "center",
 
       background:
@@ -171,7 +91,8 @@ function Signup() {
     },
 
     title: {
-      marginBottom: "10px",
+      marginBottom: "15px",
+
       color: "#333",
     },
 
@@ -194,7 +115,9 @@ function Signup() {
 
       padding: "10px",
 
-      backgroundColor: "#28a745",
+      marginTop: "10px",
+
+      backgroundColor: "#667eea",
 
       color: "white",
 
@@ -209,7 +132,7 @@ function Signup() {
       opacity: loading ? 0.7 : 1,
     },
 
-    link: {
+    backLink: {
       marginTop: "15px",
 
       display: "block",
@@ -224,15 +147,13 @@ function Signup() {
       <div style={styles.box}>
 
         <h1 style={styles.title}>
-          🏥 Healthcare App
+          🔐 Forgot Password
         </h1>
-
-        <h2 style={styles.title}>
-          Create Account
-        </h2>
 
         <input
           style={styles.input}
+
+          type="text"
 
           placeholder="Username"
 
@@ -248,7 +169,7 @@ function Signup() {
 
           type="password"
 
-          placeholder="Password"
+          placeholder="New Password"
 
           value={password}
 
@@ -260,21 +181,19 @@ function Signup() {
         <button
           style={styles.button}
 
-          onClick={handleSignup}
+          onClick={handleReset}
 
           disabled={loading}
         >
           {loading
-            ? "Creating..."
-            : "Sign Up"}
+            ? "Resetting..."
+            : "Reset Password"}
         </button>
 
-        <p style={styles.link}>
-          Already have an account?
-          {" "}
-          <Link to="/">
-            Login
-          </Link>
+        <p style={styles.backLink}>
+          <a href="/">
+            ← Back to Login
+          </a>
         </p>
 
       </div>
@@ -283,4 +202,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default ForgotPassword;

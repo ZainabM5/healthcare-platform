@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -240,3 +240,42 @@ def delete_hospital(request, id):
     hospital.delete()
 
     return Response({"message": "Hospital deleted successfully"})
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def forgot_password(request):
+
+    username = request.data.get("username")
+    new_password = request.data.get("new_password")
+
+    # 🔐 PASSWORD VALIDATION
+    if len(new_password) < 6:
+        return Response({
+            "error": "Password must be at least 6 characters long"
+        })
+
+    if not re.search(r'[A-Z]', new_password):
+        return Response({
+            "error": "Password must contain at least one uppercase letter"
+        })
+
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', new_password):
+        return Response({
+            "error": "Password must contain at least one special character"
+        })
+
+    try:
+        user = User.objects.get(username=username)
+
+        user.password = make_password(new_password)
+        user.save()
+
+        return Response({
+            "message": "Password reset successful"
+        })
+
+    except User.DoesNotExist:
+
+        return Response({
+            "error": "User not found"
+        }, status=404)

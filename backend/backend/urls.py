@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path
-from api.views import update_hospital, delete_hospital
 
 from api.views import (
     home,
@@ -10,7 +9,10 @@ from api.views import (
     signup,
     login,
     hospitals,
-    add_hospital
+    add_hospital,
+    update_hospital,
+    delete_hospital,
+    forgot_password
 )
 
 urlpatterns = [
@@ -24,6 +26,7 @@ urlpatterns = [
     # 🔐 AUTH
     path('signup/', signup),
     path('login/', login),
+    path('forgot-password/', forgot_password),
 
     # 🏥 APIs
     path('hospitals/', hospitals),
